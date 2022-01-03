@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="/css-reset.css" />
+    <link rel="stylesheet" href="/css.css" />
+    <title>Players list</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <main class="main">
+        <div>
+          <h2 class="subtitle">Добавить игрока в БД</h2>
+          <form action="/" method="post" id="post-form">
+            <div class="nav-wrapper">
+              <div>
+                <input
+                  class="fullName"
+                  type="text"
+                  name="fullName"
+                  placeholder="Введите ФИО игрока"
+                />
+              </div>
+            </div>
+            <button type="submit" id="add-btn">✚</button>
+          </form>
+        </div>
+        <h2 class="subtitle">Список участников</h2>
+        <div class="box-draft">
+          <div class="box-item">
+            <table id="table-players" class="test">
+              <tr>
+                <th>№</th>
+                <th colspan="2">Игроки</th>
+              </tr>
+            </table>
+          </div>
+          <div class="box-item">
+            <h3 class="subtitle">Поиск игрока</h3>
+            <input type="text" id="search-players" />
+            <h3 class="subtitle">Список игроков</h3>
+            <div class="players-list">
+              <% if (players.length) { %> <% players.forEach(({id, fullName}) =>
+              {%>
+              <form method="delete" action="/">
+                <div class="bd-player">
+                  <input type="checkbox" value="<%= fullName %>" class="checkbox" id="<%= id%>">
+                  <p class="text-fullName"><%= fullName %></p>
+                  <button class="btm-remove" name="<id>" data-id="<%= id%>">✖</button>
+                </div>
+              </form>
+              <%})%> <%}%>
+            </div>
+            <button id="user-add-game">Добавить</button>
+            <button id="draft">Паринги</button>
+          </div>
+        </div>
+        <div class="box-play"></div>
+      </main>
+    </div>
+    <script src="remove.js"></script>
+    <script src="playerList.js"></script>
+  </body>
+</html>
