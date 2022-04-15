@@ -1,108 +1,170 @@
-const buttonAdd = document.querySelector("#user-add-game");
-const draft = document.querySelector("#draft");
+let playersChecked = [];
+let statistics = [];
+let roundCounter = 0;
 
-buttonAdd.addEventListener("click", function (e) {
-  getCheckedCheckBoxes();
-});
-
-draft.addEventListener("click", function (e) {
-  createPlay();
-});
-
-//Добавление игроков в список
-function getCheckedCheckBoxes() {
-  let checkboxes = document.getElementsByClassName("checkbox");
-  let checkboxesChecked = [];
-  for (let i = 0; i < checkboxes.length; i++) {
-    if (checkboxes[i].checked) {
-      checkboxesChecked.push(checkboxes[i].value);
-    }
-  }
-  let i = -1;
-  document.querySelector(".test").innerHTML += checkboxesChecked
-    .map(() => {
-      i++;
-      return `<tr id="${i + 1}">
-            <td width="50px">${i + 1}</td>
-            <td width="550px"><p class="pl">${checkboxesChecked[i]}</p></td>
-            <td width="50px"><button class="remove" onClick="removeRow(${
-              i + 1
-            })" value="${i + 1}">✖</button></td>
-        </tr>`;
-    })
-    .join("");
+// Метод для определения счёта игрока
+function scorePlayer(scoreOne, scoreTwo) {
+  if (scoreOne - scoreTwo === 2 || scoreOne - scoreTwo === 1) {
+    return 3;
+  } else if (scoreOne - scoreTwo === 0) {
+    return 1;
+  } else return 0;
 }
 
-//Удаление объекта
-function removeRow(id) {
-  let description = document.getElementById(id);
-  description.remove();
+// Определение количества раундов
+function round(len, RC) {
+  return (len > 32 ? 6 : len > 16 ? 5 : len > 8 ? 4 : 3) !== RC;
 }
 
+// Создание нового тура или вывод результата
 function par() {
   let players = document.getElementsByClassName("tur");
-  let playersChecked = [];
-  for (let i = 0; i < players.length; i+=4) {
-    playersChecked[i/4] = {
+  for (let i = 0; i < players.length; i += 4) {
+    playersChecked.unshift({
       fioPOne: players[i].innerHTML,
       fioPTwo: players[i + 1].innerHTML,
-      RP: players[i + 2].value + players[i + 3].value,
-    };
-  }
-  console.log(playersChecked);
-  let statistics = [];
-  for(let i = 0; i < playersChecked.length; i++){
-    statistics.push({
-      fio: playersChecked[i].fioPOne,
-      scoring: playersChecked[i].RP === '20'|| playersChecked[i].RP === '21' || playersChecked[i].RP === '10'?'3':playersChecked[i].RP === '00'|| playersChecked[i].RP === '11'?'1':'0',
-    });
-    statistics.push({
-      fio: playersChecked[i].fioPTwo,
-      scoring: playersChecked[i].RP === '02'|| playersChecked[i].RP === '12' || playersChecked[i].RP === '01'?'3':playersChecked[i].RP === '00'|| playersChecked[i].RP === '11'?'1':'0',
+      firstPlayerScore: players[i + 2].value,
+      secondPlayerScore: players[i + 3].value,
     });
   }
-  statistics.sort((a, b) => Number(a.scoring) < Number(b.scoring) ? 1 : -1);
-  console.log(statistics);
-}
 
-//Создание игры
-function createPlay() {
-  let players = document.getElementsByClassName("pl");
-  let playersChecked = [];
-  for (let i = 0; i < players.length; i++) {
-    playersChecked.push(players[i].innerHTML);
+  if (!statistics.length) {
+    for (let i = 0; i < playersChecked.length; i++) {
+      statistics.unshift({
+        fio: playersChecked[i].fioPOne,
+        scoring: scorePlayer(
+          playersChecked[i].firstPlayerScore,
+          playersChecked[i].secondPlayerScore
+        ),
+      });
+      statistics.unshift({
+        fio: playersChecked[i].fioPTwo,
+        scoring: scorePlayer(
+          playersChecked[i].secondPlayerScore,
+          playersChecked[i].firstPlayerScore
+        ),
+      });
+    }
+  } else {
+    for (let i = 0; i < statistics.length / 2; i++) {
+      for (let j = 0; j < statistics.length; j++) {
+        if (playersChecked[i].fioPOne === statistics[j].fio) {
+          statistics[j].scoring += scorePlayer(
+            playersChecked[i].firstPlayerScore,
+            playersChecked[i].secondPlayerScore
+          );
+        }
+        if (playersChecked[i].fioPTwo === statistics[j].fio) {
+          statistics[j].scoring += scorePlayer(
+            playersChecked[i].secondPlayerScore,
+            playersChecked[i].firstPlayerScore
+          );
+        }
+      }
+    }
   }
 
-  if (playersChecked.length % 2 !== 0) playersChecked.push("Бай");
+  statistics.sort((a, b) => (Number(a.scoring) < Number(b.scoring) ? 1 : -1));
 
+  let pPlayers = [];
   let parPlayers = [];
-  playersChecked.sort(() => Math.random() - 0.5);
-  console.log(playersChecked);
-  while (playersChecked.length !== 0) {
-    let j = Math.floor(Math.random() * playersChecked.length);
-    parPlayers.push(playersChecked[j]);
-    playersChecked.splice(j, 1);
-  }
-  console.log(parPlayers);
+  let playerOne;
+  let item = -1;
+
+  do {
+    item++;
+    while (
+      statistics.length - 1 > item &&
+      statistics[item].scoring === statistics[item + 1].scoring
+    ) {
+      pPlayers.push(statistics[item]);
+      item++;
+    }
+    if (statistics[item] !== undefined) pPlayers.push(statistics[item]);
+
+    if (pPlayers.length !== 1) {
+      playerOne = pPlayers[0];
+      let playerTwo = [];
+      //Поиск второго игрока и вообще может он играть или нет
+      for (let i = 1; i < pPlayers.length; i++) {
+        for (let j = 0; j < playersChecked.length; j++) {
+          if (
+            (playerOne.fio == playersChecked[j].fioPOne &&
+              pPlayers[i].fio == playersChecked[j].fioPTwo) ||
+            (pPlayers[i].fio == playersChecked[j].fioPOne &&
+              playerOne.fio == playersChecked[j].fioPTwo)
+          ) {
+            break;
+          } else {
+            if (
+              !playerTwo.includes(pPlayers[i].fio) &&
+              j === playersChecked.length - 1
+            ) {
+              playerTwo.push(pPlayers[i].fio);
+            }
+          }
+        }
+      }
+      //Выбираем второго игрока рандомно
+      if (playerTwo.length !== 0) {
+        pPlayers.splice(0, 1);
+        let j = Math.floor(Math.random() * playerTwo.length);
+        parPlayers.push(playerOne.fio);
+        parPlayers.push(playerTwo[j]);
+        for (let i = 0; i < pPlayers.length; i++) {
+          if (playerTwo[j] === pPlayers[i].fio) {
+            pPlayers.splice(i, 1);
+            break;
+          }
+        }
+      }
+    }
+  } while (statistics.length > item);
+
+  //Добавление таблицы с результатами или новыма парингами
+  document.getElementById("par").remove();
+  roundCounter++;
   let i = -1;
-  document.querySelector(".box-play").innerHTML +=
-    `<table><tr>
+  if (round(parPlayers.length, roundCounter)) {
+    document.querySelector(".box-play").innerHTML +=
+      `<div id="par">
+    <table><tr>
     <th>№</th>
     <th colspan="2">Игроки</th>
     <th>Счёт</th>
   </tr>` +
-    parPlayers
-      .map(() => {
-        i += 1;
-        if (i % 2 === 0)
-          return `<tr>
+      parPlayers
+        .map(() => {
+          i += 1;
+          if (i % 2 === 0)
+            return `<tr>
                 <td width="50px">${i / 2 + 1}</td>
                 <td width="270px"><p class="tur">${parPlayers[i]}</p></td>
                 <td width="270px"><p class="tur">${parPlayers[i + 1]}</p></td>
                 <td width="70px"><input id="player-one" class="tur"></input><input id="player-two" class="tur"></input></td>
             </tr>`;
-      })
-      .join("") +
-    `</table>` +
-    `<button class="btm-par" onClick="par()">Паринги следующего тура</button>`;
+        })
+        .join("") +
+      `</table>` +
+      `<button class="btm-par" onClick="par()">Паринги следующего тура</button></div>`;
+  } else {
+    document.querySelector(".box-play").innerHTML +=
+      `<div id="par">
+    <table><tr>
+    <th>№</th>
+    <th>Игроки</th>
+    <th>Счёт</th>
+    </tr>` +
+      statistics
+        .map(() => {
+          i += 1;
+          return `<tr>
+                <td width="50px">${i + 1}</td>
+                <td width="540px"><p class="tur">${statistics[i].fio}</p></td>
+                <td width="70px" align="center">${statistics[i].scoring}</td>
+            </tr>`;
+        })
+        .join("") +
+      `</table>`;
+  }
 }

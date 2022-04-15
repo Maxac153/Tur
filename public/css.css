@@ -1,3 +1,5 @@
+/* Обёртка */
+
 .wrapper {
   max-width: 1000px;
   margin: 0 auto;
@@ -7,8 +9,10 @@
   padding: 20px;
 }
 
+/* Форма для добавления игроков */
+
 .subtitle {
-  margin: 0 10px 10px 15px;
+  margin: 10px 10px 10px 15px;
 }
 
 #post-form {
@@ -26,6 +30,8 @@
   font-size: 16pt;
 }
 
+/* Таблица с игроками */
+
 .box-draft {
   display: flex;
   justify-content: space-between;
@@ -33,6 +39,7 @@
 
 table {
   border-collapse: collapse;
+  margin: 0 0 10px 0;
 }
 
 td,
@@ -55,10 +62,12 @@ td {
   background-color: #f5e8d0;
 }
 
-.remove{
+.remove {
   background-color: rgb(252, 77, 77);
   border-radius: 10px;
 }
+
+/* Добавление игроков в список участников */
 
 .players-list {
   width: 200px;
@@ -70,11 +79,6 @@ td {
 
 .text {
   margin: 15px;
-}
-
-#search-players {
-  width: 200px;
-  margin: 10px;
 }
 
 #user-add-game {
@@ -89,17 +93,16 @@ td {
   margin: 10px;
 }
 
-.bd-player{
+.bd-player {
   display: flex;
   align-items: center;
-  
 }
 
-.text-fullName{
+.text-fullName {
   margin: 5px;
 }
 
-.btm-remove{
+.btm-remove {
   background-color: rgb(252, 77, 77);
   border-radius: 10px;
   font-size: 10px;
@@ -107,20 +110,34 @@ td {
   margin: 0 5px 0 auto;
 }
 
-#player-one{
-  width: 18px;
-}
+/* Таблица результатов */
 
-#player-two{
-  width: 18px;
-}
-
-.box-play{
+.box-play {
   width: 660px;
 }
 
-.btm-par{
+.btm-par {
   display: block;
   margin: 10px 0;
+  padding: 0 20px;
   margin-left: auto;
+}
+
+#player-one {
+  width: 18px;
+}
+
+#player-two {
+  width: 18px;
+}
+
+/* Поис игроков */
+
+#search-players {
+  width: 200px;
+  margin: 0 10px;
+}
+
+.hide {
+  display: none;
 }

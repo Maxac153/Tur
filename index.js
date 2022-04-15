@@ -3,18 +3,19 @@ const path = require('path');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const Players = require('./models/players');
+const config = require('./config');
 
 const app = express();
 
 app.set('view engine', 'ejs')
 
 const PORT = 3000;
-const db = "mongodb+srv://admin:vrJAdyR7mH9@cluster0.795xa.mongodb.net/players?retryWrites=true&w=majority";
+const db = `mongodb+srv://${config.user}:${config.password}@cluster0.795xa.mongodb.net/players?retryWrites=true&w=majority`;
 
-
-mongoose
-  .connect(db, {useUnifiedTopology: true, useNewUrlParser: true})
-  .then((res) => console.log('Connected to DB'))
+//Временно не работает по понятным причинам
+// mongoose
+//   .connect(db, {useUnifiedTopology: true, useNewUrlParser: true})
+//   .then((res) => console.log('Connected to DB'))
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
 
@@ -49,4 +50,4 @@ app.post('/', (req, res) => {
   })
   players.save()
   res.redirect('/')
-});
+}); 

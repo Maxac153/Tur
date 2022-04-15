@@ -32,35 +32,42 @@
           <div class="box-item">
             <table id="table-players" class="test">
               <tr>
-                <th>№</th>
-                <th colspan="2">Игроки</th>
+                <th colspan="2" width="659px">Игроки</th>
               </tr>
             </table>
+            <div class="box-play"></div>
           </div>
           <div class="box-item">
             <h3 class="subtitle">Поиск игрока</h3>
             <input type="text" id="search-players" />
             <h3 class="subtitle">Список игроков</h3>
-            <div class="players-list">
+            <!-- <div class="players-list">
               <% if (players.length) { %> <% players.forEach(({id, fullName}) =>
               {%>
-              <form method="delete" action="/">
-                <div class="bd-player">
-                  <input type="checkbox" value="<%= fullName %>" class="checkbox" id="<%= id%>">
-                  <p class="text-fullName"><%= fullName %></p>
-                  <button class="btm-remove" name="<id>" data-id="<%= id%>">✖</button>
-                </div>
+              <form method="delete" action="/" class="bd-player">
+                <input
+                  type="checkbox"
+                  value="<%= fullName %>"
+                  class="checkbox"
+                  id="<%= id%>"
+                />
+                <p class="text-fullName"><%= fullName %></p>
+                <button class="btm-remove" name="<id>" data-id="<%= id%>">
+                  ✖
+                </button>
               </form>
               <%})%> <%}%>
-            </div>
+            </div> -->
             <button id="user-add-game">Добавить</button>
             <button id="draft">Паринги</button>
           </div>
         </div>
-        <div class="box-play"></div>
       </main>
     </div>
     <script src="remove.js"></script>
+    <script src="search.js"></script>
+    <script src="createPlay.js"></script>
+    <script src="checkBoxes.js"></script>
     <script src="playerList.js"></script>
   </body>
 </html>
